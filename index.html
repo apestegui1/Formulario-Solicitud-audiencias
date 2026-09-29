@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario Único de Solicitud de Audiencia - CPPF Misiones</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- html2pdf.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f1f5f9;
+    }
+    
+    /* Estilos de hoja A4 para vista previa */
+    .a4-page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 12mm 15mm;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      font-size: 11px;
+      line-height: 1.3;
+      color: #1e293b;
+    }
+
+    .table-custom th, .table-custom td {
+      border: 1px solid #94a3b8;
+      padding: 3px 6px;
+    }
+
+    .table-custom th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    @media print {
+      body {
+        background: none;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .a4-page {
+        box-shadow: none;
+        margin: 0;
+        width: 100%;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body class="p-2 md:p-6">
+
+  <!-- ENCABEZADO DE HERRAMIENTAS DE EDICIÓN -->
+  <div class="max-w-7xl mx-auto mb-6 no-print bg-slate-900 text-white p-4 rounded-xl shadow-lg flex flex-wrap justify-between items-center gap-4">
+    <div class="flex items-center gap-3">
+      <div class="bg-amber-500 p-2 rounded-lg text-slate-900 font-bold">
+        <i class="fa-solid fa-scale-balanced text-xl"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-lg leading-tight">Formulario Único de Solicitud de Audiencia (CPPF)</h1>
+        <p class="text-xs text-slate-400">Oficina Judicial - Distrito Misiones | Poder Judicial de la Nación</p>
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="autocompletarFechaHora()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 transition">
+        <i class="fa-regular fa-clock"></i> Fecha y Hora Actual
+      </button>
+      <button onclick="descargarPDF()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-2 shadow-md transition">
+        <i class="fa-solid fa-file-pdf text-sm"></i> Descargar PDF
+      </button>
+      <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 transition">
+        <i class="fa-solid fa-print"></i> Imprimir
+      </button>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- PANEL IZQUIERDO: FORMULARIO DINÁMICO (NO SE IMPRIME) -->
+    <div class="lg:col-span-5 bg-white p-5 rounded-xl shadow-md border border-slate-200 h-fit no-print space-y-6">
+      <div class="border-b pb-3 flex justify-between items-center">
+        <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-amber-600"></i> Completar Formulario
+        </h2>
+        <span class="text-xs text-slate-500 font-mono">PJN Misiones</span>
+      </div>
+
+      <form id="audienciaForm" class="space-y-4 text-xs">
+        <!-- 1. DATOS GENERALES -->
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-3">
+          <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider border-b pb-1">1. Datos Generales del Caso</h3>
+          
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-1">Ciudad Sede *</label>
+              <select id="f_ciudad" onchange="actualizarVista()" class="w-full border rounded p-1.5 bg-white">
+                <option value="Posadas">Posadas</option>
+                <option value="Oberá">Oberá</option>
+                <option value="Eldorado">Eldorado</option>
+                <option value="Puerto Iguazú">Puerto Iguazú</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Caso Coirón N°</label>
+              <input type="text" id="f_coiron" oninput="actualizarVista()" placeholder="Ej: 125689/2026" class="w-full border rounded p-1.5">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-1">Fecha de Solicitud</label>
+              <input type="date" id="f_fecha_solicitud" onchange="actualizarVista()" class="w-full border rounded p-1.5">
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Hora de Solicitud</label>
+              <input type="time" id="f_hora_solicitud" onchange="actualizarVista()" class="w-full border rounded p-1.5">
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-1">Carátula del Caso *</label>
+            <input type="text" id="f_caratula" oninput="actualizarVista()" placeholder="Ej: PÉREZ, Juan Carlos y otros s/ Infracción Ley 23.737" class="w-full border rounded p-1.5">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-1">Modo de Inicio</label>
+              <select id="f_modo_inicio" onchange="actualizarVista()" class="w-full border rounded p-1.5 bg-white">
+                <option value="PREVENCIÓN">PREVENCIÓN</option>
+                <option value="DENUNCIA">DENUNCIA</option>
+                <option value="INVESTIGACIÓN DE OFICIO">INVESTIGACIÓN DE OFICIO</option>
+                <option value="QUERELLA">QUERELLA</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Fuerza / Detalle Inicio</label>
+              <input type="text" id="f_fuerza" oninput="actualizarVista()" placeholder="Ej: Gendarmería Nacional" class="w-full border rounded p-1.5">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block font-semibold mb-1">Tentativa</label>
+              <select id="f_tentativa" onchange="actualizarVista()" class="w-full border rounded p-1.5 bg-white">
+                <option value="NO">NO</option>
+                <option value="SI">SI</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Concurso</label>
+              <select id="f_concurso" onchange="actualizarVista()" class="w-full border rounded p-1.5 bg-white">
+                <option value="NO">NO</option>
+                <option value="SI">SI</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Cant. Hechos</label>
+              <input type="number" id="f_cant_hechos" value="1" min="1" oninput="actualizarVista()" class="w-full border rounded p-1.5">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-1">Fecha de Comisión</label>
+              <input type="date" id="f_fecha_comision" onchange="actualizarVista()" class="w-full border rounded p-1.5">
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Lugar de Comisión (Municipio)</label>
+              <input type="text" id="f_lugar_comision" oninput="actualizarVista()" placeholder="Ej: Candelaria" class="w-full border rounded p-1.5">
+            </div>
+          </div>
+
+          <!-- DESPLEGABLE DE TIPO DE AUDIENCIA SEGÚN LA GUÍA -->
+          <div>
+            <label class="block font-semibold mb-1">Etapa Procesal</label>
+            <select id="f_etapa" onchange="cargarTiposAudiencia(); actualizarVista();" class="w-full border rounded p-1.5 bg-white font-medium text-amber-800">
+              <option value="GARANTIAS">Etapa Garantías</option>
+              <option value="REVISION">Etapa Revisión</option>
+              <option value="JUICIO">Etapa Juicio</option>
+              <option value="EJECUCION">Etapa Ejecución</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-1">Tipo de Audiencia Solicitada *</label>
+            <select id="f_tipo_audiencia" onchange="actualizarVista()" class="w-full border rounded p-1.5 bg-white font-medium">
+              <!-- Se carga dinámicamente -->
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-1">Solicitada Por</label>
+              <select id="f_solicitada_por" onchange="actualizarVista()" class="w-full border rounded p-1.5 bg-white">
+                <option value="MPF">MPF (Fiscalía)</option>
+                <option value="MPD">MPD (Defensa Pública)</option>
+                <option value="Defensa Particular">Defensa Particular</option>
+                <option value="Querella">Querella</option>
+                <option value="MPF y Defensa">MPF y Defensa</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">N° Carpeta OFIJU</label>
+              <input type="text" id="f_carpeta_ofiju" oninput="actualizarVista()" placeholder="Ej: FPO 4897/2026" class="w-full border rounded p-1.5">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-1">Intervención Previa Juez</label>
+              <select id="f_intervencion_juez" onchange="actualizarVista()" class="w-full border rounded p-1.5 bg-white">
+                <option value="NO">NO</option>
+                <option value="SI">SI</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Nombre Juez/ces Intervinientes</label>
+              <input type="text" id="f_nombre_jueces" oninput="actualizarVista()" placeholder="Ej: Dr. López" class="w-full border rounded p-1.5">
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. DATOS DE IMPUTADO DE MUESTRA -->
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-3">
+          <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider border-b pb-1">2. Datos Imputado 1</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-1">Apellido y Nombre</label>
+              <input type="text" id="f_imp1_nombre" oninput="actualizarVista()" placeholder="Ej: PÉREZ, Juan Carlos" class="w-full border rounded p-1.5">
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Documento / DNI</label>
+              <input type="text" id="f_imp1_dni" oninput="actualizarVista()" class="w-full border rounded p-1.5">
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block font-semibold mb-1">Edad</label>
+              <input type="text" id="f_imp1_edad" oninput="actualizarVista()" class="w-full border rounded p-1.5">
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Nacionalidad</label>
+              <input type="text" id="f_imp1_nac" value="Argentina" oninput="actualizarVista()" class="w-full border rounded p-1.5">
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">¿Detenido?</label>
+              <select id="f_imp1_detenido" onchange="actualizarVista()" class="w-full border rounded p-1.5 bg-white">
+                <option value="SI">SI</option>
+                <option value="NO">NO</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Delito / Calificación Jurídica</label>
+            <input type="text" id="f_imp1_delito" oninput="actualizarVista()" placeholder="Ej: Art 5 inc C Ley 23.737" class="w-full border rounded p-1.5">
+          </div>
+        </div>
+
+        <!-- 3. UNIDAD FISCAL Y DEFENSA -->
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-3">
+          <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider border-b pb-1">3. Datos Fiscalía / Defensa</h3>
+          <div>
+            <label class="block font-semibold mb-1">Fiscal Interviniente</label>
+            <input type="text" id="f_fiscal_nombre" oninput="actualizarVista()" placeholder="Ej: Dr. Guillermo F. Sanabria" class="w-full border rounded p-1.5">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Defensor / Abogado</label>
+            <input type="text" id="f_defensa_nombre" oninput="actualizarVista()" placeholder="Ej: Dra. María González" class="w-full border rounded p-1.5">
+          </div>
+        </div>
+
+        <!-- OBSERVACIONES -->
+        <div>
+          <label class="block font-semibold mb-1">Observaciones / Aclaraciones Adicionales</label>
+          <textarea id="f_obs" oninput="actualizarVista()" rows="2" class="w-full border rounded p-1.5" placeholder="Escriba aquí aclaraciones del caso..."></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- PANEL DERECHO: VISTA PREVIA Y DOCUMENTO PARA IMPRIMIR/DESCARGAR -->
+    <div class="lg:col-span-7 flex justify-center">
+      <div id="pdfContainer" class="a4-page relative flex flex-col justify-between border border-slate-300">
+        
+        <div>
+          <!-- CABECERA INSTITUCIONAL CON LOGO -->
+          <div class="border-b-2 border-slate-800 pb-2 mb-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <!-- Escudo de Argentina de alta calidad -->
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Coat_of_arms_of_Argentina.svg/250px-Coat_of_arms_of_Argentina.svg.png" class="w-12 h-auto" alt="Escudo Argentina">
+              <div>
+                <h1 class="font-bold text-sm tracking-wide text-slate-900 uppercase">Poder Judicial de la Nación</h1>
+                <h2 class="text-xs font-semibold text-slate-700 uppercase">Oficina Judicial - Distrito Misiones</h2>
+                <p class="text-[9px] text-slate-500 font-medium">FORMULARIO ÚNICO DE SOLICITUD DE AUDIENCIA (CPPF)</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="bg-slate-900 text-white text-[9px] font-bold px-2 py-0.5 rounded">OFIJU MISIONES</span>
+              <p class="text-[9px] text-slate-500 mt-1">CÓDIGO PROCESAL PENAL FEDERAL</p>
+            </div>
+          </div>
+
+          <!-- CORREO DESTINO SUGERIDO -->
+          <div class="bg-amber-50 border border-amber-200 rounded p-1.5 mb-3 flex justify-between items-center text-[10px]">
+            <span class="font-semibold text-amber-900">Correo Oficial Destino:</span>
+            <span id="v_correo_oficial" class="font-mono text-amber-950 font-bold">ofjudicial.posadas.garantias@pjn.gov.ar</span>
+          </div>
+
+          <!-- SECCIÓN 1: DATOS GENERALES -->
+          <div class="mb-3">
+            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-1">
+              1. DATOS GENERALES DEL CASO
+            </div>
+            <table class="w-full text-[10px] table-custom border-collapse">
+              <tr>
+                <td class="bg-slate-100 font-bold w-1/6">Jurisdicción:</td>
+                <td class="w-1/3 font-bold">MISIONES</td>
+                <td class="bg-slate-100 font-bold w-1/6">Ciudad:</td>
+                <td id="v_ciudad" class="w-1/3 font-semibold text-slate-900">Posadas</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold">Fecha Solicitud:</td>
+                <td id="v_fecha_solicitud" class="font-mono">-</td>
+                <td class="bg-slate-100 font-bold">Hora Solicitud:</td>
+                <td id="v_hora_solicitud" class="font-mono">-</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold">Caso Coirón N°:</td>
+                <td id="v_coiron" class="font-mono font-bold text-blue-900">-</td>
+                <td class="bg-slate-100 font-bold">Modo de Inicio:</td>
+                <td id="v_modo_inicio">-</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold">Carátula:</td>
+                <td colspan="3" id="v_caratula" class="font-semibold text-slate-900 uppercase">SELECCIONE O ESCRIBA LA CARÁTULA...</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold">Tentativa:</td>
+                <td id="v_tentativa">NO</td>
+                <td class="bg-slate-100 font-bold">Concurso:</td>
+                <td id="v_concurso">NO</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold">Fecha Comisión:</td>
+                <td id="v_fecha_comision" class="font-mono">-</td>
+                <td class="bg-slate-100 font-bold">Lugar Comisión:</td>
+                <td id="v_lugar_comision">-</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold">Tipo Audiencia:</td>
+                <td colspan="3" id="v_tipo_audiencia" class="font-bold text-amber-900 uppercase bg-amber-50">-</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold">Solicitada por:</td>
+                <td id="v_solicitada_por" class="font-semibold">MPF</td>
+                <td class="bg-slate-100 font-bold">Carpeta OFIJU:</td>
+                <td id="v_carpeta_ofiju" class="font-mono">-</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold">Interv. Juez Previa:</td>
+                <td id="v_intervencion_juez">NO</td>
+                <td class="bg-slate-100 font-bold">Jueces Previos:</td>
+                <td id="v_nombre_jueces">-</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- SECCIÓN 2: IMPUTADOS -->
+          <div class="mb-3">
+            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-1">
+              2. DATOS DE LOS IMPUTADOS / INVESTIGADOS
+            </div>
+            <table class="w-full text-[9px] table-custom border-collapse text-center">
+              <thead>
+                <tr>
+                  <th class="w-24">Nombre y Apellido</th>
+                  <th class="w-16">Documento</th>
+                  <th class="w-8">Edad</th>
+                  <th class="w-16">Nacionalidad</th>
+                  <th class="w-10">Detenido</th>
+                  <th>Delito / Calificación Jurídica</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td id="v_imp1_nombre" class="font-semibold text-left">PÉREZ, Juan Carlos</td>
+                  <td id="v_imp1_dni" class="font-mono">-</td>
+                  <td id="v_imp1_edad">-</td>
+                  <td id="v_imp1_nac">Argentina</td>
+                  <td id="v_imp1_detenido" class="font-bold">SI</td>
+                  <td id="v_imp1_delito" class="text-left">-</td>
+                </tr>
+                <tr>
+                  <td class="text-slate-400 text-left">Imputado 2</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- SECCIÓN 3 Y 4: DEFENSORÍA Y FISCALÍA -->
+          <div class="grid grid-cols-2 gap-2 mb-3">
+            <div>
+              <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-1">
+                3. DEFENSE / UNIDAD DEFENSORA
+              </div>
+              <table class="w-full text-[9px] table-custom border-collapse">
+                <tr>
+                  <td class="bg-slate-100 font-bold w-1/3">Defensor:</td>
+                  <td id="v_defensa_nombre" class="font-semibold">-</td>
+                </tr>
+              </table>
+            </div>
+
+            <div>
+              <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-1">
+                4. UNIDAD FISCAL (MPF)
+              </div>
+              <table class="w-full text-[9px] table-custom border-collapse">
+                <tr>
+                  <td class="bg-slate-100 font-bold w-1/3">Fiscal:</td>
+                  <td id="v_fiscal_nombre" class="font-semibold">-</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- OBSERVACIONES -->
+          <div class="mb-4">
+            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-1">
+              OBSERVACIONES Y SOLICITUDES ESPECIALES
+            </div>
+            <div id="v_obs" class="border border-slate-300 p-2 min-h-[45px] text-[10px] bg-slate-50 italic text-slate-700">
+              Sin observaciones adicionales.
+            </div>
+          </div>
+        </div>
+
+        <!-- FIRMA Y PIE DE PÁGINA INSTITUCIONAL -->
+        <div class="pt-4 border-t border-slate-300">
+          <div class="grid grid-cols-2 gap-8 items-end mb-4">
+            <div class="text-[9px] text-slate-500">
+              <p>• La firma puede ser digital (token) u hológrafa.</p>
+              <p>• Enviar este formulario PDF firmado a la cuenta oficial correspondiente.</p>
+            </div>
+            <div class="text-center">
+              <div class="border-b border-slate-800 w-4/5 mx-auto mb-1"></div>
+              <p class="font-bold text-[10px] text-slate-800">Firma y Sello del Solicitante</p>
+              <p class="text-[8px] text-slate-500">MPF / MPD / Defensa Particular / Querella</p>
+            </div>
+          </div>
+
+          <div class="text-center text-[8px] text-slate-400 border-t pt-1 font-mono">
+            Poder Judicial de la Nación - Oficina Judicial Distrito Misiones - Sistema de Gestión de Audiencias CPPF
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LÓGICA DE JAVASCRIPT CON TODAS LAS AUDIENCIAS DEL ANEXO 1 DE LA GUÍA -->
+  <script>
+    const AUDIENCIAS_POR_ETAPA = {
+      GARANTIAS: [
+        "Audiencia de Formalización de la investigación (Art. 258)",
+        "Audiencia de control de detención (art. 216, CPPF)",
+        "Audiencia de medida de coerción (Art. 223, 1er. Párr., CPPF)",
+        "Audiencia Multipropósito General",
+        "Audiencia unilateral de medidas de prueba (Art. 143, in fine, CPPF)",
+        "Audiencia unilateral de mantenimiento de secuestro (Art. 152, 2do. Párr.)",
+        "Audiencia unilateral de allanamiento (Art. 143, in fine, CPPF)",
+        "Audiencia de sobreseimiento (Art. 272, CPPF)",
+        "Audiencia de Suspensión de Proceso a Prueba (Art. 35)",
+        "Audiencia de Acuerdo Pleno (Art. 324)",
+        "Audiencia de Acuerdo Parcial (Art. 326)",
+        "Audiencia de Conciliación (Art. 34)"
+      ],
+      REVISION: [
+        "Audiencia de control de la Acusación (Art. 279, CPPF)",
+        "Audiencia de sustanciación de impugnación (Art. 362)",
+        "Audiencia de revisión de medida de coerción (Art. 223 in fine y 362)",
+        "Audiencia de revisión de decisiones del Juez con funciones de ejecución (Art. 381)",
+        "Audiencia Multipropósito General",
+        "Queja por impugnación denegada (Art. 361 CPPF)"
+      ],
+      JUICIO: [
+        "Audiencia preliminar (Art. 281)",
+        "Audiencia de debate (Art. 294)",
+        "Audiencia de Debate con Tribunal unipersonal (Arts. 55, inc. A, y 294)",
+        "Audiencia de determinación de pena (Art. 304)",
+        "Audiencia de lectura de sentencia (Art. 306)",
+        "Audiencia Multipropósito General"
+      ],
+      EJECUCION: [
+        "Audiencia de oposición al cómputo de pena (Art. 376)",
+        "Audiencia de Unificación de pena (Art. 377)",
+        "Audiencia de planteos durante la etapa de ejecución (Art. 380)",
+        "Audiencia de salidas transitorias (Art. 331)",
+        "Audiencia de libertad condicional (Art. 331)",
+        "Audiencia de revocación o cumplimiento de reglas de conducta (Art. 379)",
+        "Audiencia Multipropósito General"
+      ]
+    };
+
+    const CORREOS_SEDE = {
+      Posadas: {
+        GARANTIAS: "ofjudicial.posadas.garantias@pjn.gov.ar",
+        REVISION: "ofjudicial.posadas.revision@pjn.gov.ar",
+        JUICIO: "ofjudicial.posadas.juicioyejecucion@pjn.gov.ar",
+        EJECUCION: "ofjudicial.posadas.juicioyejecucion@pjn.gov.ar"
+      },
+      Oberá: {
+        GARANTIAS: "ofjudicial.obera.garantias@pjn.gov.ar",
+        REVISION: "ofjudicial.posadas.revision@pjn.gov.ar",
+        JUICIO: "ofjudicial.posadas.juicioyejecucion@pjn.gov.ar",
+        EJECUCION: "ofjudicial.posadas.juicioyejecucion@pjn.gov.ar"
+      },
+      Eldorado: {
+        GARANTIAS: "ofjudicial.eldorado.garantias@pjn.gov.ar",
+        REVISION: "ofjudicial.posadas.revision@pjn.gov.ar",
+        JUICIO: "ofjudicial.posadas.juicioyejecucion@pjn.gov.ar",
+        EJECUCION: "ofjudicial.posadas.juicioyejecucion@pjn.gov.ar"
+      },
+      "Puerto Iguazú": {
+        GARANTIAS: "ofjudicial.ptoiguazu.garantias@pjn.gov.ar",
+        REVISION: "ofjudicial.posadas.revision@pjn.gov.ar",
+        JUICIO: "ofjudicial.posadas.juicioyejecucion@pjn.gov.ar",
+        EJECUCION: "ofjudicial.posadas.juicioyejecucion@pjn.gov.ar"
+      }
+    };
+
+    function cargarTiposAudiencia() {
+      const etapa = document.getElementById('f_etapa').value;
+      const selectTipo = document.getElementById('f_tipo_audiencia');
+      selectTipo.innerHTML = '';
+
+      AUDIENCIAS_POR_ETAPA[etapa].forEach(item => {
+        const option = document.createElement('option');
+        option.value = item;
+        option.textContent = item;
+        selectTipo.appendChild(option);
+      });
+    }
+
+    function autocompletarFechaHora() {
+      const ahora = new Date();
+      const fecha = ahora.toISOString().split('T')[0];
+      const hora = ahora.toTimeString().split(' ')[0].substring(0, 5);
+      
+      document.getElementById('f_fecha_solicitud').value = fecha;
+      document.getElementById('f_hora_solicitud').value = hora;
+      actualizarVista();
+    }
+
+    function actualizarVista() {
+      // 1. Datos Generales
+      const ciudad = document.getElementById('f_ciudad').value;
+      const etapa = document.getElementById('f_etapa').value;
+      
+      document.getElementById('v_ciudad').textContent = ciudad;
+      document.getElementById('v_coiron').textContent = document.getElementById('f_coiron').value || '-';
+      document.getElementById('v_fecha_solicitud').textContent = document.getElementById('f_fecha_solicitud').value || '-';
+      document.getElementById('v_hora_solicitud').textContent = document.getElementById('f_hora_solicitud').value || '-';
+      document.getElementById('v_caratula').textContent = document.getElementById('f_caratula').value || 'SELECCIONE O ESCRIBA LA CARÁTULA...';
+      
+      const modo = document.getElementById('f_modo_inicio').value;
+      const fuerza = document.getElementById('f_fuerza').value;
+      document.getElementById('v_modo_inicio').textContent = fuerza ? `${modo} (${fuerza})` : modo;
+
+      document.getElementById('v_tentativa').textContent = document.getElementById('f_tentativa').value;
+      document.getElementById('v_concurso').textContent = document.getElementById('f_concurso').value;
+      document.getElementById('v_fecha_comision').textContent = document.getElementById('f_fecha_comision').value || '-';
+      document.getElementById('v_lugar_comision').textContent = document.getElementById('f_lugar_comision').value || '-';
+
+      document.getElementById('v_tipo_audiencia').textContent = document.getElementById('f_tipo_audiencia').value || '-';
+      document.getElementById('v_solicitada_por').textContent = document.getElementById('f_solicitada_por').value;
+      document.getElementById('v_carpeta_ofiju').textContent = document.getElementById('f_carpeta_ofiju').value || '-';
+      document.getElementById('v_intervencion_juez').textContent = document.getElementById('f_intervencion_juez').value;
+      document.getElementById('v_nombre_jueces').textContent = document.getElementById('f_nombre_jueces').value || '-';
+
+      // Correo oficial dinámico según matriz
+      if (CORREOS_SEDE[ciudad] && CORREOS_SEDE[ciudad][etapa]) {
+        document.getElementById('v_correo_oficial').textContent = CORREOS_SEDE[ciudad][etapa];
+      }
+
+      // Imputado 1
+      document.getElementById('v_imp1_nombre').textContent = document.getElementById('f_imp1_nombre').value || 'PÉREZ, Juan Carlos';
+      document.getElementById('v_imp1_dni').textContent = document.getElementById('f_imp1_dni').value || '-';
+      document.getElementById('v_imp1_edad').textContent = document.getElementById('f_imp1_edad').value || '-';
+      document.getElementById('v_imp1_nac').textContent = document.getElementById('f_imp1_nac').value || 'Argentina';
+      document.getElementById('v_imp1_detenido').textContent = document.getElementById('f_imp1_detenido').value;
+      document.getElementById('v_imp1_delito').textContent = document.getElementById('f_imp1_delito').value || '-';
+
+      // Fiscalía y Defensa
+      document.getElementById('v_fiscal_nombre').textContent = document.getElementById('f_fiscal_nombre').value || '-';
+      document.getElementById('v_defensa_nombre').textContent = document.getElementById('f_defensa_nombre').value || '-';
+
+      // Observaciones
+      const obs = document.getElementById('f_obs').value;
+      document.getElementById('v_obs').textContent = obs.trim() !== '' ? obs : 'Sin observaciones adicionales.';
+    }
+
+    function descargarPDF() {
+      const element = document.getElementById('pdfContainer');
+      const caratula = document.getElementById('f_caratula').value || 'Solicitud_Audiencia';
+      const filename = `Formulario_Audiencia_${caratula.substring(0, 20)}.pdf`;
+
+      const opt = {
+        margin:       0,
+        filename:     filename,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save();
+    }
+
+    // Inicialización al cargar página
+    window.onload = function() {
+      cargarTiposAudiencia();
+      autocompletarFechaHora();
+    };
+  </script>
+</body>
+</html>
