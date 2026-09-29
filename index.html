@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulario Único de Solicitud de Audiencia - CPPF Misiones</title>
+  <title>Formulario Único de Solicitud de Audiencia - CPPF Misiones (Horizontal)</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- html2pdf.js CDN -->
@@ -18,21 +18,22 @@
       background-color: #f1f5f9;
     }
     
-    .a4-page {
-      width: 210mm;
-      min-height: 297mm;
-      padding: 10mm 12mm;
+    /* CONFIGURACIÓN A4 HORIZONTAL */
+    .a4-landscape-page {
+      width: 297mm;
+      min-height: 210mm;
+      padding: 8mm 10mm;
       margin: 0 auto;
       background: white;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      font-size: 10px;
-      line-height: 1.25;
+      font-size: 10.5px;
+      line-height: 1.3;
       color: #1e293b;
     }
 
     .table-custom th, .table-custom td {
       border: 1px solid #94a3b8;
-      padding: 2px 4px;
+      padding: 3px 6px;
     }
 
     .table-custom th {
@@ -42,23 +43,27 @@
     }
 
     @media print {
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
       body { background: none; }
       .no-print { display: none !important; }
-      .a4-page { box-shadow: none; margin: 0; width: 100%; padding: 0; }
+      .a4-landscape-page { box-shadow: none; margin: 0; width: 100%; padding: 5mm; }
     }
   </style>
 </head>
 <body class="p-2 md:p-6">
 
   <!-- ENCABEZADO DE HERRAMIENTAS -->
-  <div class="max-w-7xl mx-auto mb-6 no-print bg-slate-900 text-white p-4 rounded-xl shadow-lg flex flex-wrap justify-between items-center gap-4">
+  <div class="max-w-[1600px] mx-auto mb-6 no-print bg-slate-900 text-white p-4 rounded-xl shadow-lg flex flex-wrap justify-between items-center gap-4">
     <div class="flex items-center gap-3">
       <div class="bg-amber-500 p-2 rounded-lg text-slate-900 font-bold">
         <i class="fa-solid fa-scale-balanced text-xl"></i>
       </div>
       <div>
         <h1 class="font-bold text-lg leading-tight">Formulario Único de Solicitud de Audiencia (CPPF)</h1>
-        <p class="text-xs text-slate-400">Oficina Judicial - Distrito Misiones | Poder Judicial de la Nación</p>
+        <p class="text-xs text-slate-400">Oficina Judicial - Distrito Misiones | Vista Horizontal (A4 Landscape)</p>
       </div>
     </div>
     <div class="flex gap-2">
@@ -68,16 +73,16 @@
       <button onclick="descargarPDF()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-2 shadow-md transition">
         <i class="fa-solid fa-file-pdf text-sm"></i> Descargar PDF
       </button>
-      <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 transition">
+      <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs flex items-center gap-2 transition">
         <i class="fa-solid fa-print"></i> Imprimir
       </button>
     </div>
   </div>
 
-  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <div class="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6">
 
     <!-- PANEL IZQUIERDO: FORMULARIO DINÁMICO -->
-    <div class="lg:col-span-5 bg-white p-5 rounded-xl shadow-md border border-slate-200 h-fit max-h-[85vh] overflow-y-auto no-print space-y-6">
+    <div class="xl:col-span-4 bg-white p-5 rounded-xl shadow-md border border-slate-200 h-fit max-h-[88vh] overflow-y-auto no-print space-y-5">
       <div class="border-b pb-3 flex justify-between items-center sticky top-0 bg-white z-10 py-1">
         <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
           <i class="fa-solid fa-pen-to-square text-amber-600"></i> Completar Formulario
@@ -165,7 +170,7 @@
               <input type="date" id="f_fecha_comision" onchange="actualizarVista()" class="w-full border rounded p-1.5">
             </div>
             <div>
-              <label class="block font-semibold mb-1">Lugar de Comisión (Municipio)</label>
+              <label class="block font-semibold mb-1">Lugar de Comisión</label>
               <input type="text" id="f_lugar_comision" oninput="actualizarVista()" placeholder="Ej: Candelaria" class="w-full border rounded p-1.5">
             </div>
           </div>
@@ -221,10 +226,9 @@
         <!-- 2. DATOS DE LOS IMPUTADOS (1 A 4) -->
         <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-4">
           <div class="flex justify-between items-center border-b pb-1">
-            <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider">2. Datos de los Imputados / Investigados</h3>
+            <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider">2. Imputados / Investigados</h3>
           </div>
 
-          <!-- Selector de Imputado a editar -->
           <div class="flex gap-1 border-b pb-2">
             <button type="button" onclick="mostrarTabImputado(1)" id="btnTab1" class="px-2 py-1 bg-amber-500 text-white rounded font-bold text-xs">Imp. 1</button>
             <button type="button" onclick="mostrarTabImputado(2)" id="btnTab2" class="px-2 py-1 bg-slate-200 text-slate-700 rounded font-bold text-xs">Imp. 2</button>
@@ -232,11 +236,7 @@
             <button type="button" onclick="mostrarTabImputado(4)" id="btnTab4" class="px-2 py-1 bg-slate-200 text-slate-700 rounded font-bold text-xs">Imp. 4</button>
           </div>
 
-          <!-- FORMULARIOS INDIVIDUALES PARA CADA IMPUTADO -->
-          <template id="tpl_imp"></template>
-          <div id="contenedor_forms_imputados">
-            <!-- Se crean por JavaScript -->
-          </div>
+          <div id="contenedor_forms_imputados"></div>
         </div>
 
         <!-- 3 Y 4. FISCALÍA Y DEFENSA -->
@@ -254,15 +254,15 @@
 
         <!-- OBSERVACIONES -->
         <div>
-          <label class="block font-semibold mb-1">Observaciones / Aclaraciones Adicionales</label>
-          <textarea id="f_obs" oninput="actualizarVista()" rows="2" class="w-full border rounded p-1.5" placeholder="Escriba aquí aclaraciones del caso..."></textarea>
+          <label class="block font-semibold mb-1">Observaciones / Aclaraciones</label>
+          <textarea id="f_obs" oninput="actualizarVista()" rows="2" class="w-full border rounded p-1.5" placeholder="Aclaraciones del caso..."></textarea>
         </div>
       </form>
     </div>
 
-    <!-- PANEL DERECHO: VISTA PREVIA DEL DOCUMENTO OFICIAL A4 -->
-    <div class="lg:col-span-7 flex justify-center">
-      <div id="pdfContainer" class="a4-page relative flex flex-col justify-between border border-slate-300">
+    <!-- PANEL DERECHO: VISTA PREVIA DEL DOCUMENTO A4 HORIZONTAL -->
+    <div class="xl:col-span-8 flex justify-center overflow-x-auto">
+      <div id="pdfContainer" class="a4-landscape-page relative flex flex-col justify-between border border-slate-300">
         
         <div>
           <!-- CABECERA INSTITUCIONAL -->
@@ -270,99 +270,85 @@
             <div class="flex items-center gap-3">
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Coat_of_arms_of_Argentina.svg/250px-Coat_of_arms_of_Argentina.svg.png" class="w-10 h-auto" alt="Escudo Argentina">
               <div>
-                <h1 class="font-bold text-xs tracking-wide text-slate-900 uppercase">Poder Judicial de la Nación</h1>
-                <h2 class="text-[10px] font-semibold text-slate-700 uppercase">Oficina Judicial - Distrito Misiones</h2>
-                <p class="text-[8px] text-slate-500 font-medium">FORMULARIO ÚNICO DE SOLICITUD DE AUDIENCIA (CPPF)</p>
+                <h1 class="font-bold text-sm tracking-wide text-slate-900 uppercase">Poder Judicial de la Nación</h1>
+                <h2 class="text-xs font-semibold text-slate-700 uppercase">Oficina Judicial - Distrito Misiones</h2>
+                <p class="text-[9px] text-slate-500 font-medium">FORMULARIO ÚNICO DE SOLICITUD DE AUDIENCIA (CPPF)</p>
               </div>
             </div>
             <div class="text-right">
-              <span class="bg-slate-900 text-white text-[8px] font-bold px-2 py-0.5 rounded">OFIJU MISIONES</span>
-              <p class="text-[8px] text-slate-500 mt-0.5">CÓDIGO PROCESAL PENAL FEDERAL</p>
+              <span class="bg-slate-900 text-white text-[9px] font-bold px-2 py-0.5 rounded">OFIJU MISIONES</span>
+              <p class="text-[9px] text-slate-500 mt-0.5">CÓDIGO PROCESAL PENAL FEDERAL</p>
             </div>
           </div>
 
           <!-- CORREO DESTINO SUGERIDO -->
-          <div class="bg-amber-50 border border-amber-200 rounded p-1 mb-2 flex justify-between items-center text-[9px]">
-            <span class="font-semibold text-amber-900">Correo Oficial Destino:</span>
-            <span id="v_correo_oficial" class="font-mono text-amber-950 font-bold">ofjudicial.posadas.garantias@pjn.gov.ar</span>
+          <div class="bg-amber-50 border border-amber-200 rounded p-1.5 mb-2 flex justify-between items-center text-xs">
+            <span class="font-semibold text-amber-900">Correo Oficial Destino para Remitir Formulario:</span>
+            <span id="v_correo_oficial" class="font-mono text-amber-950 font-bold text-sm">ofjudicial.posadas.garantias@pjn.gov.ar</span>
           </div>
 
           <!-- 1. DATOS GENERALES -->
           <div class="mb-2">
-            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
+            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-0.5">
               1. DATOS GENERALES DEL CASO
             </div>
-            <table class="w-full text-[8.5px] table-custom border-collapse">
+            <table class="w-full text-[9.5px] table-custom border-collapse">
               <tr>
-                <td class="bg-slate-100 font-bold w-1/6">Jurisdicción:</td>
-                <td class="w-1/3 font-bold">MISIONES</td>
-                <td class="bg-slate-100 font-bold w-1/6">Ciudad:</td>
-                <td id="v_ciudad" class="w-1/3 font-semibold text-slate-900">Posadas</td>
-              </tr>
-              <tr>
-                <td class="bg-slate-100 font-bold">Fecha Solicitud:</td>
-                <td id="v_fecha_solicitud" class="font-mono">-</td>
-                <td class="bg-slate-100 font-bold">Hora Solicitud:</td>
-                <td id="v_hora_solicitud" class="font-mono">-</td>
+                <td class="bg-slate-100 font-bold w-32">Jurisdicción:</td>
+                <td class="font-bold w-48">MISIONES</td>
+                <td class="bg-slate-100 font-bold w-28">Ciudad Sede:</td>
+                <td id="v_ciudad" class="font-semibold text-slate-900 w-48">Posadas</td>
+                <td class="bg-slate-100 font-bold w-32">Fecha / Hora Solicitud:</td>
+                <td id="v_fechahora_solicitud" class="font-mono">-</td>
               </tr>
               <tr>
                 <td class="bg-slate-100 font-bold">Caso Coirón N°:</td>
                 <td id="v_coiron" class="font-mono font-bold text-blue-900">-</td>
                 <td class="bg-slate-100 font-bold">Modo de Inicio:</td>
                 <td id="v_modo_inicio">-</td>
-              </tr>
-              <tr>
-                <td class="bg-slate-100 font-bold">Carátula:</td>
-                <td colspan="3" id="v_caratula" class="font-semibold text-slate-900 uppercase">COMPLETE LA CARÁTULA DEL CASO...</td>
-              </tr>
-              <tr>
-                <td class="bg-slate-100 font-bold">Tentativa:</td>
-                <td id="v_tentativa">NO</td>
-                <td class="bg-slate-100 font-bold">Concurso:</td>
-                <td id="v_concurso">NO</td>
-              </tr>
-              <tr>
-                <td class="bg-slate-100 font-bold">Fecha Comisión:</td>
-                <td id="v_fecha_comision" class="font-mono">-</td>
-                <td class="bg-slate-100 font-bold">Lugar Comisión:</td>
-                <td id="v_lugar_comision">-</td>
-              </tr>
-              <tr>
-                <td class="bg-slate-100 font-bold">Tipo Audiencia:</td>
-                <td colspan="3" id="v_tipo_audiencia" class="font-bold text-amber-900 uppercase bg-amber-50">-</td>
-              </tr>
-              <tr>
-                <td class="bg-slate-100 font-bold">Solicitada por:</td>
-                <td id="v_solicitada_por" class="font-semibold">MPF</td>
                 <td class="bg-slate-100 font-bold">Carpeta OFIJU:</td>
                 <td id="v_carpeta_ofiju" class="font-mono">-</td>
               </tr>
               <tr>
-                <td class="bg-slate-100 font-bold">Interv. Juez Previa:</td>
-                <td id="v_intervencion_juez">NO</td>
-                <td class="bg-slate-100 font-bold">Jueces Previos:</td>
-                <td id="v_nombre_jueces">-</td>
+                <td class="bg-slate-100 font-bold">Carátula del Caso:</td>
+                <td colspan="5" id="v_caratula" class="font-semibold text-slate-900 uppercase">COMPLETE LA CARÁTULA DEL CASO...</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold">Hecho Imputado:</td>
+                <td colspan="3">
+                  Tentativa: <span id="v_tentativa" class="font-bold">NO</span> | 
+                  Concurso: <span id="v_concurso" class="font-bold">NO</span> | 
+                  Fecha Com.: <span id="v_fecha_comision" class="font-mono">-</span> | 
+                  Lugar: <span id="v_lugar_comision" class="font-semibold">-</span>
+                </td>
+                <td class="bg-slate-100 font-bold">Solicitada Por:</td>
+                <td id="v_solicitada_por" class="font-semibold">MPF</td>
+              </tr>
+              <tr>
+                <td class="bg-slate-100 font-bold">Tipo de Audiencia:</td>
+                <td colspan="3" id="v_tipo_audiencia" class="font-bold text-amber-900 uppercase bg-amber-50">-</td>
+                <td class="bg-slate-100 font-bold">Interv. Previa Juez:</td>
+                <td><span id="v_intervencion_juez">NO</span> (<span id="v_nombre_jueces">-</span>)</td>
               </tr>
             </table>
           </div>
 
           <!-- 2. TABLA COMPLETA DE IMPUTADOS -->
           <div class="mb-2">
-            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
+            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-0.5">
               2. DATOS DE LOS IMPUTADOS / INVESTIGADOS
             </div>
-            <table class="w-full text-[8px] table-custom border-collapse">
+            <table class="w-full text-[9px] table-custom border-collapse">
               <thead>
                 <tr class="text-center bg-slate-100">
-                  <th class="w-4">#</th>
-                  <th>Apellido y Nombre</th>
-                  <th>Documento</th>
-                  <th>Edad</th>
-                  <th>Nac.</th>
+                  <th class="w-6">#</th>
+                  <th class="w-56">Apellido y Nombre</th>
+                  <th class="w-24">Documento</th>
+                  <th class="w-12">Edad</th>
+                  <th class="w-24">Nacionalidad</th>
                   <th>Domicilio / Ciudad / País</th>
-                  <th>C.P.</th>
-                  <th>Teléfono</th>
-                  <th>Detenido</th>
+                  <th class="w-24">Teléfono</th>
+                  <th class="w-16">Detenido</th>
                 </tr>
               </thead>
               <tbody id="v_tabla_imputados">
@@ -370,17 +356,17 @@
               </tbody>
             </table>
 
-            <!-- CUADRO DE DETENCIÓN Y REFERENTES (SI APLICA) -->
-            <div class="mt-1">
-              <div class="font-bold text-[8px] text-slate-700 uppercase border-b mb-0.5">Detalle de Detención y Referentes (si corresponde)</div>
-              <table class="w-full text-[7.5px] table-custom border-collapse">
+            <!-- CUADRO DE DETENCIÓN Y REFERENTES -->
+            <div class="mt-1.5">
+              <div class="font-bold text-[8.5px] text-slate-700 uppercase border-b mb-0.5">Detalle de Detención y Referentes / Tutores (si corresponde)</div>
+              <table class="w-full text-[8.5px] table-custom border-collapse">
                 <thead>
                   <tr class="text-center bg-slate-50">
-                    <th class="w-4">#</th>
-                    <th>Fecha / Hora Detención</th>
-                    <th>Lugar y Dirección Detención</th>
-                    <th>Tel / Email Lugar Detención</th>
-                    <th>Referente / Tutor (Nombre y Tel)</th>
+                    <th class="w-6">#</th>
+                    <th class="w-36">Fecha / Hora Detención</th>
+                    <th>Lugar y Dirección de Detención</th>
+                    <th class="w-48">Tel / Email Lugar Detención</th>
+                    <th class="w-64">Referente / Tutor (Nombre y Teléfono)</th>
                   </tr>
                 </thead>
                 <tbody id="v_tabla_detenidos">
@@ -391,26 +377,26 @@
           </div>
 
           <!-- 3 Y 4. FISCALÍA Y DEFENSA -->
-          <div class="grid grid-cols-2 gap-2 mb-2">
+          <div class="grid grid-cols-2 gap-3 mb-2">
             <div>
-              <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
+              <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9.5px] uppercase tracking-wider mb-0.5">
                 3. DATOS DE LA UNIDAD DEFENSORA
               </div>
-              <table class="w-full text-[8px] table-custom border-collapse">
+              <table class="w-full text-[9px] table-custom border-collapse">
                 <tr>
-                  <td class="bg-slate-100 font-bold w-1/3">Defensor/a:</td>
+                  <td class="bg-slate-100 font-bold w-28">Defensor/a:</td>
                   <td id="v_defensa_nombre" class="font-semibold">-</td>
                 </tr>
               </table>
             </div>
 
             <div>
-              <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
+              <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9.5px] uppercase tracking-wider mb-0.5">
                 4. DATOS DE LA UNIDAD FISCAL (MPF)
               </div>
-              <table class="w-full text-[8px] table-custom border-collapse">
+              <table class="w-full text-[9px] table-custom border-collapse">
                 <tr>
-                  <td class="bg-slate-100 font-bold w-1/3">Fiscal:</td>
+                  <td class="bg-slate-100 font-bold w-28">Fiscal Interviniente:</td>
                   <td id="v_fiscal_nombre" class="font-semibold">-</td>
                 </tr>
               </table>
@@ -419,10 +405,10 @@
 
           <!-- OBSERVACIONES -->
           <div class="mb-2">
-            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
-              OBSERVACIONES Y ACLARACIONES
+            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9.5px] uppercase tracking-wider mb-0.5">
+              OBSERVACIONES Y ACLARACIONES ADICIONALES
             </div>
-            <div id="v_obs" class="border border-slate-300 p-1.5 min-h-[35px] text-[8.5px] bg-slate-50 italic text-slate-700">
+            <div id="v_obs" class="border border-slate-300 p-1.5 min-h-[30px] text-[9px] bg-slate-50 italic text-slate-700">
               Sin observaciones adicionales.
             </div>
           </div>
@@ -430,19 +416,19 @@
 
         <!-- FIRMA Y PIE DE PÁGINA INSTITUCIONAL -->
         <div class="pt-2 border-t border-slate-300">
-          <div class="grid grid-cols-2 gap-6 items-end mb-2">
+          <div class="grid grid-cols-2 gap-12 items-end mb-1">
             <div class="text-[8px] text-slate-500 leading-tight">
-              <p>• La firma puede ser digital (mediante token) u hológrafa.</p>
-              <p>• Una vez completado y firmado, escanee y remita por correo electrónico según oficina interviniente.</p>
+              <p>• La firma puede ser digital (mediante token) u hológrafa en caso de presentación en formato impreso.</p>
+              <p>• Una vez completado y firmado, escanee y remita por correo electrónico según la oficina interviniente.</p>
             </div>
             <div class="text-center">
-              <div class="border-b border-slate-800 w-3/4 mx-auto mb-1"></div>
-              <p class="font-bold text-[9px] text-slate-800">Firma y Sello del Solicitante</p>
-              <p class="text-[7.5px] text-slate-500">MPF / MPD / Defensa Particular / Querella</p>
+              <div class="border-b border-slate-800 w-2/3 mx-auto mb-1"></div>
+              <p class="font-bold text-[9.5px] text-slate-800">Firma y Sello del Solicitante</p>
+              <p class="text-[8px] text-slate-500">MPF / MPD / Defensa Particular / Querella</p>
             </div>
           </div>
 
-          <div class="text-center text-[7.5px] text-slate-400 border-t pt-0.5 font-mono">
+          <div class="text-center text-[8px] text-slate-400 border-t pt-0.5 font-mono">
             Poder Judicial de la Nación - Oficina Judicial Distrito Misiones - Sistema de Gestión de Audiencias CPPF
           </div>
         </div>
@@ -452,7 +438,7 @@
 
   </div>
 
-  <!-- LÓGICA DE JAVASCRIPT CON MATRIZ DE 4 IMPUTADOS -->
+  <!-- LÓGICA DE JAVASCRIPT -->
   <script>
     const AUDIENCIAS_POR_ETAPA = {
       GARANTIAS: [
@@ -566,8 +552,8 @@
               <input type="text" id="imp_${i}_domicilio" oninput="actualizarVista()" placeholder="Ej: Av. Corrientes 1234, Posadas" class="w-full border rounded p-1">
             </div>
             <div>
-              <label class="block font-semibold">Cod. Postal / Tel</label>
-              <input type="text" id="imp_${i}_tel" oninput="actualizarVista()" placeholder="C.P. / Teléfono" class="w-full border rounded p-1">
+              <label class="block font-semibold">Teléfono</label>
+              <input type="text" id="imp_${i}_tel" oninput="actualizarVista()" placeholder="Teléfono" class="w-full border rounded p-1">
             </div>
           </div>
           <div class="border-t pt-2 mt-2 bg-amber-50/50 p-2 rounded border border-amber-200">
@@ -633,14 +619,16 @@
     }
 
     function actualizarVista() {
-      // 1. Datos Generales
       const ciudad = document.getElementById('f_ciudad').value;
       const etapa = document.getElementById('f_etapa').value;
       
       document.getElementById('v_ciudad').textContent = ciudad;
       document.getElementById('v_coiron').textContent = document.getElementById('f_coiron').value || '-';
-      document.getElementById('v_fecha_solicitud').textContent = document.getElementById('f_fecha_solicitud').value || '-';
-      document.getElementById('v_hora_solicitud').textContent = document.getElementById('f_hora_solicitud').value || '-';
+      
+      const fSol = document.getElementById('f_fecha_solicitud').value || '-';
+      const hSol = document.getElementById('f_hora_solicitud').value || '-';
+      document.getElementById('v_fechahora_solicitud').textContent = `${fSol} ${hSol}`;
+
       document.getElementById('v_caratula').textContent = document.getElementById('f_caratula').value || 'COMPLETE LA CARÁTULA DEL CASO...';
       
       const modo = document.getElementById('f_modo_inicio').value;
@@ -688,7 +676,6 @@
           <td class="text-center">${edad || '-'}</td>
           <td class="text-center">${nac || '-'}</td>
           <td>${dom || '-'}</td>
-          <td class="text-center font-mono">-</td>
           <td class="text-center font-mono">${tel || '-'}</td>
           <td class="text-center font-bold ${det === 'SI' ? 'text-red-700' : ''}">${det}</td>
         `;
@@ -724,14 +711,14 @@
     function descargarPDF() {
       const element = document.getElementById('pdfContainer');
       const caratula = document.getElementById('f_caratula').value || 'Solicitud_Audiencia';
-      const filename = `Formulario_Audiencia_${caratula.substring(0, 20)}.pdf`;
+      const filename = `Formulario_Audiencia_${caratula.substring(0, 25)}.pdf`;
 
       const opt = {
         margin:       0,
         filename:     filename,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
       };
 
       html2pdf().set(opt).from(element).save();
@@ -745,3 +732,4 @@
   </script>
 </body>
 </html>
+ 
