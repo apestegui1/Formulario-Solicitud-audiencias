@@ -18,22 +18,21 @@
       background-color: #f1f5f9;
     }
     
-    /* Estilos de hoja A4 para vista previa */
     .a4-page {
       width: 210mm;
       min-height: 297mm;
-      padding: 12mm 15mm;
+      padding: 10mm 12mm;
       margin: 0 auto;
       background: white;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      font-size: 11px;
-      line-height: 1.3;
+      font-size: 10px;
+      line-height: 1.25;
       color: #1e293b;
     }
 
     .table-custom th, .table-custom td {
       border: 1px solid #94a3b8;
-      padding: 3px 6px;
+      padding: 2px 4px;
     }
 
     .table-custom th {
@@ -43,24 +42,15 @@
     }
 
     @media print {
-      body {
-        background: none;
-      }
-      .no-print {
-        display: none !important;
-      }
-      .a4-page {
-        box-shadow: none;
-        margin: 0;
-        width: 100%;
-        padding: 0;
-      }
+      body { background: none; }
+      .no-print { display: none !important; }
+      .a4-page { box-shadow: none; margin: 0; width: 100%; padding: 0; }
     }
   </style>
 </head>
 <body class="p-2 md:p-6">
 
-  <!-- ENCABEZADO DE HERRAMIENTAS DE EDICIÓN -->
+  <!-- ENCABEZADO DE HERRAMIENTAS -->
   <div class="max-w-7xl mx-auto mb-6 no-print bg-slate-900 text-white p-4 rounded-xl shadow-lg flex flex-wrap justify-between items-center gap-4">
     <div class="flex items-center gap-3">
       <div class="bg-amber-500 p-2 rounded-lg text-slate-900 font-bold">
@@ -86,9 +76,9 @@
 
   <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- PANEL IZQUIERDO: FORMULARIO DINÁMICO (NO SE IMPRIME) -->
-    <div class="lg:col-span-5 bg-white p-5 rounded-xl shadow-md border border-slate-200 h-fit no-print space-y-6">
-      <div class="border-b pb-3 flex justify-between items-center">
+    <!-- PANEL IZQUIERDO: FORMULARIO DINÁMICO -->
+    <div class="lg:col-span-5 bg-white p-5 rounded-xl shadow-md border border-slate-200 h-fit max-h-[85vh] overflow-y-auto no-print space-y-6">
+      <div class="border-b pb-3 flex justify-between items-center sticky top-0 bg-white z-10 py-1">
         <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
           <i class="fa-solid fa-pen-to-square text-amber-600"></i> Completar Formulario
         </h2>
@@ -96,7 +86,7 @@
       </div>
 
       <form id="audienciaForm" class="space-y-4 text-xs">
-        <!-- 1. DATOS GENERALES -->
+        <!-- 1. DATOS GENERALES DEL CASO -->
         <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-3">
           <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider border-b pb-1">1. Datos Generales del Caso</h3>
           
@@ -180,7 +170,6 @@
             </div>
           </div>
 
-          <!-- DESPLEGABLE DE TIPO DE AUDIENCIA SEGÚN LA GUÍA -->
           <div>
             <label class="block font-semibold mb-1">Etapa Procesal</label>
             <select id="f_etapa" onchange="cargarTiposAudiencia(); actualizarVista();" class="w-full border rounded p-1.5 bg-white font-medium text-amber-800">
@@ -194,7 +183,6 @@
           <div>
             <label class="block font-semibold mb-1">Tipo de Audiencia Solicitada *</label>
             <select id="f_tipo_audiencia" onchange="actualizarVista()" class="w-full border rounded p-1.5 bg-white font-medium">
-              <!-- Se carga dinámicamente -->
             </select>
           </div>
 
@@ -230,47 +218,32 @@
           </div>
         </div>
 
-        <!-- 2. DATOS DE IMPUTADO DE MUESTRA -->
-        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-3">
-          <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider border-b pb-1">2. Datos Imputado 1</h3>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="block font-semibold mb-1">Apellido y Nombre</label>
-              <input type="text" id="f_imp1_nombre" oninput="actualizarVista()" placeholder="Ej: PÉREZ, Juan Carlos" class="w-full border rounded p-1.5">
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Documento / DNI</label>
-              <input type="text" id="f_imp1_dni" oninput="actualizarVista()" class="w-full border rounded p-1.5">
-            </div>
+        <!-- 2. DATOS DE LOS IMPUTADOS (1 A 4) -->
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-4">
+          <div class="flex justify-between items-center border-b pb-1">
+            <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider">2. Datos de los Imputados / Investigados</h3>
           </div>
-          <div class="grid grid-cols-3 gap-2">
-            <div>
-              <label class="block font-semibold mb-1">Edad</label>
-              <input type="text" id="f_imp1_edad" oninput="actualizarVista()" class="w-full border rounded p-1.5">
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Nacionalidad</label>
-              <input type="text" id="f_imp1_nac" value="Argentina" oninput="actualizarVista()" class="w-full border rounded p-1.5">
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">¿Detenido?</label>
-              <select id="f_imp1_detenido" onchange="actualizarVista()" class="w-full border rounded p-1.5 bg-white">
-                <option value="SI">SI</option>
-                <option value="NO">NO</option>
-              </select>
-            </div>
+
+          <!-- Selector de Imputado a editar -->
+          <div class="flex gap-1 border-b pb-2">
+            <button type="button" onclick="mostrarTabImputado(1)" id="btnTab1" class="px-2 py-1 bg-amber-500 text-white rounded font-bold text-xs">Imp. 1</button>
+            <button type="button" onclick="mostrarTabImputado(2)" id="btnTab2" class="px-2 py-1 bg-slate-200 text-slate-700 rounded font-bold text-xs">Imp. 2</button>
+            <button type="button" onclick="mostrarTabImputado(3)" id="btnTab3" class="px-2 py-1 bg-slate-200 text-slate-700 rounded font-bold text-xs">Imp. 3</button>
+            <button type="button" onclick="mostrarTabImputado(4)" id="btnTab4" class="px-2 py-1 bg-slate-200 text-slate-700 rounded font-bold text-xs">Imp. 4</button>
           </div>
-          <div>
-            <label class="block font-semibold mb-1">Delito / Calificación Jurídica</label>
-            <input type="text" id="f_imp1_delito" oninput="actualizarVista()" placeholder="Ej: Art 5 inc C Ley 23.737" class="w-full border rounded p-1.5">
+
+          <!-- FORMULARIOS INDIVIDUALES PARA CADA IMPUTADO -->
+          <template id="tpl_imp"></template>
+          <div id="contenedor_forms_imputados">
+            <!-- Se crean por JavaScript -->
           </div>
         </div>
 
-        <!-- 3. UNIDAD FISCAL Y DEFENSA -->
+        <!-- 3 Y 4. FISCALÍA Y DEFENSA -->
         <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-3">
-          <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider border-b pb-1">3. Datos Fiscalía / Defensa</h3>
+          <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider border-b pb-1">3 y 4. Defensa y Fiscalía</h3>
           <div>
-            <label class="block font-semibold mb-1">Fiscal Interviniente</label>
+            <label class="block font-semibold mb-1">Fiscal Interviniente (MPF)</label>
             <input type="text" id="f_fiscal_nombre" oninput="actualizarVista()" placeholder="Ej: Dr. Guillermo F. Sanabria" class="w-full border rounded p-1.5">
           </div>
           <div>
@@ -287,40 +260,39 @@
       </form>
     </div>
 
-    <!-- PANEL DERECHO: VISTA PREVIA Y DOCUMENTO PARA IMPRIMIR/DESCARGAR -->
+    <!-- PANEL DERECHO: VISTA PREVIA DEL DOCUMENTO OFICIAL A4 -->
     <div class="lg:col-span-7 flex justify-center">
       <div id="pdfContainer" class="a4-page relative flex flex-col justify-between border border-slate-300">
         
         <div>
-          <!-- CABECERA INSTITUCIONAL CON LOGO -->
-          <div class="border-b-2 border-slate-800 pb-2 mb-3 flex items-center justify-between">
+          <!-- CABECERA INSTITUCIONAL -->
+          <div class="border-b-2 border-slate-800 pb-2 mb-2 flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <!-- Escudo de Argentina de alta calidad -->
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Coat_of_arms_of_Argentina.svg/250px-Coat_of_arms_of_Argentina.svg.png" class="w-12 h-auto" alt="Escudo Argentina">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Coat_of_arms_of_Argentina.svg/250px-Coat_of_arms_of_Argentina.svg.png" class="w-10 h-auto" alt="Escudo Argentina">
               <div>
-                <h1 class="font-bold text-sm tracking-wide text-slate-900 uppercase">Poder Judicial de la Nación</h1>
-                <h2 class="text-xs font-semibold text-slate-700 uppercase">Oficina Judicial - Distrito Misiones</h2>
-                <p class="text-[9px] text-slate-500 font-medium">FORMULARIO ÚNICO DE SOLICITUD DE AUDIENCIA (CPPF)</p>
+                <h1 class="font-bold text-xs tracking-wide text-slate-900 uppercase">Poder Judicial de la Nación</h1>
+                <h2 class="text-[10px] font-semibold text-slate-700 uppercase">Oficina Judicial - Distrito Misiones</h2>
+                <p class="text-[8px] text-slate-500 font-medium">FORMULARIO ÚNICO DE SOLICITUD DE AUDIENCIA (CPPF)</p>
               </div>
             </div>
             <div class="text-right">
-              <span class="bg-slate-900 text-white text-[9px] font-bold px-2 py-0.5 rounded">OFIJU MISIONES</span>
-              <p class="text-[9px] text-slate-500 mt-1">CÓDIGO PROCESAL PENAL FEDERAL</p>
+              <span class="bg-slate-900 text-white text-[8px] font-bold px-2 py-0.5 rounded">OFIJU MISIONES</span>
+              <p class="text-[8px] text-slate-500 mt-0.5">CÓDIGO PROCESAL PENAL FEDERAL</p>
             </div>
           </div>
 
           <!-- CORREO DESTINO SUGERIDO -->
-          <div class="bg-amber-50 border border-amber-200 rounded p-1.5 mb-3 flex justify-between items-center text-[10px]">
+          <div class="bg-amber-50 border border-amber-200 rounded p-1 mb-2 flex justify-between items-center text-[9px]">
             <span class="font-semibold text-amber-900">Correo Oficial Destino:</span>
             <span id="v_correo_oficial" class="font-mono text-amber-950 font-bold">ofjudicial.posadas.garantias@pjn.gov.ar</span>
           </div>
 
-          <!-- SECCIÓN 1: DATOS GENERALES -->
-          <div class="mb-3">
-            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-1">
+          <!-- 1. DATOS GENERALES -->
+          <div class="mb-2">
+            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
               1. DATOS GENERALES DEL CASO
             </div>
-            <table class="w-full text-[10px] table-custom border-collapse">
+            <table class="w-full text-[8.5px] table-custom border-collapse">
               <tr>
                 <td class="bg-slate-100 font-bold w-1/6">Jurisdicción:</td>
                 <td class="w-1/3 font-bold">MISIONES</td>
@@ -341,7 +313,7 @@
               </tr>
               <tr>
                 <td class="bg-slate-100 font-bold">Carátula:</td>
-                <td colspan="3" id="v_caratula" class="font-semibold text-slate-900 uppercase">SELECCIONE O ESCRIBA LA CARÁTULA...</td>
+                <td colspan="3" id="v_caratula" class="font-semibold text-slate-900 uppercase">COMPLETE LA CARÁTULA DEL CASO...</td>
               </tr>
               <tr>
                 <td class="bg-slate-100 font-bold">Tentativa:</td>
@@ -374,62 +346,69 @@
             </table>
           </div>
 
-          <!-- SECCIÓN 2: IMPUTADOS -->
-          <div class="mb-3">
-            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-1">
+          <!-- 2. TABLA COMPLETA DE IMPUTADOS -->
+          <div class="mb-2">
+            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
               2. DATOS DE LOS IMPUTADOS / INVESTIGADOS
             </div>
-            <table class="w-full text-[9px] table-custom border-collapse text-center">
+            <table class="w-full text-[8px] table-custom border-collapse">
               <thead>
-                <tr>
-                  <th class="w-24">Nombre y Apellido</th>
-                  <th class="w-16">Documento</th>
-                  <th class="w-8">Edad</th>
-                  <th class="w-16">Nacionalidad</th>
-                  <th class="w-10">Detenido</th>
-                  <th>Delito / Calificación Jurídica</th>
+                <tr class="text-center bg-slate-100">
+                  <th class="w-4">#</th>
+                  <th>Apellido y Nombre</th>
+                  <th>Documento</th>
+                  <th>Edad</th>
+                  <th>Nac.</th>
+                  <th>Domicilio / Ciudad / País</th>
+                  <th>C.P.</th>
+                  <th>Teléfono</th>
+                  <th>Detenido</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td id="v_imp1_nombre" class="font-semibold text-left">PÉREZ, Juan Carlos</td>
-                  <td id="v_imp1_dni" class="font-mono">-</td>
-                  <td id="v_imp1_edad">-</td>
-                  <td id="v_imp1_nac">Argentina</td>
-                  <td id="v_imp1_detenido" class="font-bold">SI</td>
-                  <td id="v_imp1_delito" class="text-left">-</td>
-                </tr>
-                <tr>
-                  <td class="text-slate-400 text-left">Imputado 2</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>-</td>
-                </tr>
+              <tbody id="v_tabla_imputados">
+                <!-- Generado por JavaScript (4 Filas) -->
               </tbody>
             </table>
+
+            <!-- CUADRO DE DETENCIÓN Y REFERENTES (SI APLICA) -->
+            <div class="mt-1">
+              <div class="font-bold text-[8px] text-slate-700 uppercase border-b mb-0.5">Detalle de Detención y Referentes (si corresponde)</div>
+              <table class="w-full text-[7.5px] table-custom border-collapse">
+                <thead>
+                  <tr class="text-center bg-slate-50">
+                    <th class="w-4">#</th>
+                    <th>Fecha / Hora Detención</th>
+                    <th>Lugar y Dirección Detención</th>
+                    <th>Tel / Email Lugar Detención</th>
+                    <th>Referente / Tutor (Nombre y Tel)</th>
+                  </tr>
+                </thead>
+                <tbody id="v_tabla_detenidos">
+                  <!-- Generado por JavaScript (4 Filas) -->
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <!-- SECCIÓN 3 Y 4: DEFENSORÍA Y FISCALÍA -->
-          <div class="grid grid-cols-2 gap-2 mb-3">
+          <!-- 3 Y 4. FISCALÍA Y DEFENSA -->
+          <div class="grid grid-cols-2 gap-2 mb-2">
             <div>
-              <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-1">
-                3. DEFENSE / UNIDAD DEFENSORA
+              <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
+                3. DATOS DE LA UNIDAD DEFENSORA
               </div>
-              <table class="w-full text-[9px] table-custom border-collapse">
+              <table class="w-full text-[8px] table-custom border-collapse">
                 <tr>
-                  <td class="bg-slate-100 font-bold w-1/3">Defensor:</td>
+                  <td class="bg-slate-100 font-bold w-1/3">Defensor/a:</td>
                   <td id="v_defensa_nombre" class="font-semibold">-</td>
                 </tr>
               </table>
             </div>
 
             <div>
-              <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-1">
-                4. UNIDAD FISCAL (MPF)
+              <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
+                4. DATOS DE LA UNIDAD FISCAL (MPF)
               </div>
-              <table class="w-full text-[9px] table-custom border-collapse">
+              <table class="w-full text-[8px] table-custom border-collapse">
                 <tr>
                   <td class="bg-slate-100 font-bold w-1/3">Fiscal:</td>
                   <td id="v_fiscal_nombre" class="font-semibold">-</td>
@@ -439,31 +418,31 @@
           </div>
 
           <!-- OBSERVACIONES -->
-          <div class="mb-4">
-            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider mb-1">
-              OBSERVACIONES Y SOLICITUDES ESPECIALES
+          <div class="mb-2">
+            <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
+              OBSERVACIONES Y ACLARACIONES
             </div>
-            <div id="v_obs" class="border border-slate-300 p-2 min-h-[45px] text-[10px] bg-slate-50 italic text-slate-700">
+            <div id="v_obs" class="border border-slate-300 p-1.5 min-h-[35px] text-[8.5px] bg-slate-50 italic text-slate-700">
               Sin observaciones adicionales.
             </div>
           </div>
         </div>
 
         <!-- FIRMA Y PIE DE PÁGINA INSTITUCIONAL -->
-        <div class="pt-4 border-t border-slate-300">
-          <div class="grid grid-cols-2 gap-8 items-end mb-4">
-            <div class="text-[9px] text-slate-500">
-              <p>• La firma puede ser digital (token) u hológrafa.</p>
-              <p>• Enviar este formulario PDF firmado a la cuenta oficial correspondiente.</p>
+        <div class="pt-2 border-t border-slate-300">
+          <div class="grid grid-cols-2 gap-6 items-end mb-2">
+            <div class="text-[8px] text-slate-500 leading-tight">
+              <p>• La firma puede ser digital (mediante token) u hológrafa.</p>
+              <p>• Una vez completado y firmado, escanee y remita por correo electrónico según oficina interviniente.</p>
             </div>
             <div class="text-center">
-              <div class="border-b border-slate-800 w-4/5 mx-auto mb-1"></div>
-              <p class="font-bold text-[10px] text-slate-800">Firma y Sello del Solicitante</p>
-              <p class="text-[8px] text-slate-500">MPF / MPD / Defensa Particular / Querella</p>
+              <div class="border-b border-slate-800 w-3/4 mx-auto mb-1"></div>
+              <p class="font-bold text-[9px] text-slate-800">Firma y Sello del Solicitante</p>
+              <p class="text-[7.5px] text-slate-500">MPF / MPD / Defensa Particular / Querella</p>
             </div>
           </div>
 
-          <div class="text-center text-[8px] text-slate-400 border-t pt-1 font-mono">
+          <div class="text-center text-[7.5px] text-slate-400 border-t pt-0.5 font-mono">
             Poder Judicial de la Nación - Oficina Judicial Distrito Misiones - Sistema de Gestión de Audiencias CPPF
           </div>
         </div>
@@ -473,7 +452,7 @@
 
   </div>
 
-  <!-- LÓGICA DE JAVASCRIPT CON TODAS LAS AUDIENCIAS DEL ANEXO 1 DE LA GUÍA -->
+  <!-- LÓGICA DE JAVASCRIPT CON MATRIZ DE 4 IMPUTADOS -->
   <script>
     const AUDIENCIAS_POR_ETAPA = {
       GARANTIAS: [
@@ -544,6 +523,92 @@
       }
     };
 
+    function inicializarFormsImputados() {
+      const container = document.getElementById('contenedor_forms_imputados');
+      container.innerHTML = '';
+
+      for (let i = 1; i <= 4; i++) {
+        const div = document.createElement('div');
+        div.id = `form_imp_${i}`;
+        div.className = i === 1 ? 'space-y-2' : 'space-y-2 hidden';
+        div.innerHTML = `
+          <div class="font-bold text-amber-800 text-xs underline">Datos de Imputado / Investigado ${i}</div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold">Apellido y Nombre</label>
+              <input type="text" id="imp_${i}_nombre" oninput="actualizarVista()" placeholder="Ej: PÉREZ, Juan Carlos" class="w-full border rounded p-1">
+            </div>
+            <div>
+              <label class="block font-semibold">DNI / Documento</label>
+              <input type="text" id="imp_${i}_dni" oninput="actualizarVista()" class="w-full border rounded p-1">
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block font-semibold">Edad</label>
+              <input type="text" id="imp_${i}_edad" oninput="actualizarVista()" class="w-full border rounded p-1">
+            </div>
+            <div>
+              <label class="block font-semibold">Nacionalidad</label>
+              <input type="text" id="imp_${i}_nac" value="Argentina" oninput="actualizarVista()" class="w-full border rounded p-1">
+            </div>
+            <div>
+              <label class="block font-semibold">¿Detenido?</label>
+              <select id="imp_${i}_detenido" onchange="actualizarVista()" class="w-full border rounded p-1 bg-white">
+                <option value="NO">NO</option>
+                <option value="SI">SI</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="col-span-2">
+              <label class="block font-semibold">Domicilio - Ciudad - País</label>
+              <input type="text" id="imp_${i}_domicilio" oninput="actualizarVista()" placeholder="Ej: Av. Corrientes 1234, Posadas" class="w-full border rounded p-1">
+            </div>
+            <div>
+              <label class="block font-semibold">Cod. Postal / Tel</label>
+              <input type="text" id="imp_${i}_tel" oninput="actualizarVista()" placeholder="C.P. / Teléfono" class="w-full border rounded p-1">
+            </div>
+          </div>
+          <div class="border-t pt-2 mt-2 bg-amber-50/50 p-2 rounded border border-amber-200">
+            <div class="font-bold text-slate-700 text-[10px] mb-1">Detalle si se encuentra Detenido:</div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block font-semibold">Fecha y Hora Detención</label>
+                <input type="text" id="imp_${i}_det_fechahora" oninput="actualizarVista()" placeholder="DD/MM/AAAA - HH:MM" class="w-full border rounded p-1">
+              </div>
+              <div>
+                <label class="block font-semibold">Lugar y Dirección Detención</label>
+                <input type="text" id="imp_${i}_det_lugar" oninput="actualizarVista()" placeholder="Ej: Comisaría 1ra Posadas" class="w-full border rounded p-1">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-1">
+              <div>
+                <label class="block font-semibold">Tel / Email Lugar Detención</label>
+                <input type="text" id="imp_${i}_det_contacto" oninput="actualizarVista()" class="w-full border rounded p-1">
+              </div>
+              <div>
+                <label class="block font-semibold">Referente/Tutor y Teléfono</label>
+                <input type="text" id="imp_${i}_referente" oninput="actualizarVista()" placeholder="Nombre y Teléfono tutor" class="w-full border rounded p-1">
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      }
+    }
+
+    function mostrarTabImputado(num) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`form_imp_${i}`).classList.add('hidden');
+        const btn = document.getElementById(`btnTab${i}`);
+        btn.className = 'px-2 py-1 bg-slate-200 text-slate-700 rounded font-bold text-xs';
+      }
+      document.getElementById(`form_imp_${num}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`btnTab${num}`);
+      activeBtn.className = 'px-2 py-1 bg-amber-500 text-white rounded font-bold text-xs';
+    }
+
     function cargarTiposAudiencia() {
       const etapa = document.getElementById('f_etapa').value;
       const selectTipo = document.getElementById('f_tipo_audiencia');
@@ -576,7 +641,7 @@
       document.getElementById('v_coiron').textContent = document.getElementById('f_coiron').value || '-';
       document.getElementById('v_fecha_solicitud').textContent = document.getElementById('f_fecha_solicitud').value || '-';
       document.getElementById('v_hora_solicitud').textContent = document.getElementById('f_hora_solicitud').value || '-';
-      document.getElementById('v_caratula').textContent = document.getElementById('f_caratula').value || 'SELECCIONE O ESCRIBA LA CARÁTULA...';
+      document.getElementById('v_caratula').textContent = document.getElementById('f_caratula').value || 'COMPLETE LA CARÁTULA DEL CASO...';
       
       const modo = document.getElementById('f_modo_inicio').value;
       const fuerza = document.getElementById('f_fuerza').value;
@@ -593,18 +658,59 @@
       document.getElementById('v_intervencion_juez').textContent = document.getElementById('f_intervencion_juez').value;
       document.getElementById('v_nombre_jueces').textContent = document.getElementById('f_nombre_jueces').value || '-';
 
-      // Correo oficial dinámico según matriz
+      // Correo oficial
       if (CORREOS_SEDE[ciudad] && CORREOS_SEDE[ciudad][etapa]) {
         document.getElementById('v_correo_oficial').textContent = CORREOS_SEDE[ciudad][etapa];
       }
 
-      // Imputado 1
-      document.getElementById('v_imp1_nombre').textContent = document.getElementById('f_imp1_nombre').value || 'PÉREZ, Juan Carlos';
-      document.getElementById('v_imp1_dni').textContent = document.getElementById('f_imp1_dni').value || '-';
-      document.getElementById('v_imp1_edad').textContent = document.getElementById('f_imp1_edad').value || '-';
-      document.getElementById('v_imp1_nac').textContent = document.getElementById('f_imp1_nac').value || 'Argentina';
-      document.getElementById('v_imp1_detenido').textContent = document.getElementById('f_imp1_detenido').value;
-      document.getElementById('v_imp1_delito').textContent = document.getElementById('f_imp1_delito').value || '-';
+      // RENDERIZAR TABLA DE IMPUTADOS (1 a 4)
+      const tbodyImp = document.getElementById('v_tabla_imputados');
+      const tbodyDet = document.getElementById('v_tabla_detenidos');
+      tbodyImp.innerHTML = '';
+      tbodyDet.innerHTML = '';
+
+      for (let i = 1; i <= 4; i++) {
+        const nombre = document.getElementById(`imp_${i}_nombre`).value;
+        const dni = document.getElementById(`imp_${i}_dni`).value;
+        const edad = document.getElementById(`imp_${i}_edad`).value;
+        const nac = document.getElementById(`imp_${i}_nac`).value;
+        const det = document.getElementById(`imp_${i}_detenido`).value;
+        const dom = document.getElementById(`imp_${i}_domicilio`).value;
+        const tel = document.getElementById(`imp_${i}_tel`).value;
+
+        // Fila datos generales imputado
+        const trImp = document.createElement('tr');
+        trImp.className = nombre ? 'font-medium' : 'text-slate-400';
+        trImp.innerHTML = `
+          <td class="text-center font-bold">${i}</td>
+          <td>${nombre || `Imputado ${i}`}</td>
+          <td class="text-center font-mono">${dni || '-'}</td>
+          <td class="text-center">${edad || '-'}</td>
+          <td class="text-center">${nac || '-'}</td>
+          <td>${dom || '-'}</td>
+          <td class="text-center font-mono">-</td>
+          <td class="text-center font-mono">${tel || '-'}</td>
+          <td class="text-center font-bold ${det === 'SI' ? 'text-red-700' : ''}">${det}</td>
+        `;
+        tbodyImp.appendChild(trImp);
+
+        // Fila datos de detención
+        const detFechaHora = document.getElementById(`imp_${i}_det_fechahora`).value;
+        const detLugar = document.getElementById(`imp_${i}_det_lugar`).value;
+        const detContacto = document.getElementById(`imp_${i}_det_contacto`).value;
+        const referente = document.getElementById(`imp_${i}_referente`).value;
+
+        const trDet = document.createElement('tr');
+        trDet.className = det === 'SI' ? 'font-medium' : 'text-slate-400';
+        trDet.innerHTML = `
+          <td class="text-center font-bold">${i}</td>
+          <td class="text-center font-mono">${detFechaHora || '-'}</td>
+          <td>${detLugar || '-'}</td>
+          <td>${detContacto || '-'}</td>
+          <td>${referente || '-'}</td>
+        `;
+        tbodyDet.appendChild(trDet);
+      }
 
       // Fiscalía y Defensa
       document.getElementById('v_fiscal_nombre').textContent = document.getElementById('f_fiscal_nombre').value || '-';
@@ -631,8 +737,8 @@
       html2pdf().set(opt).from(element).save();
     }
 
-    // Inicialización al cargar página
     window.onload = function() {
+      inicializarFormsImputados();
       cargarTiposAudiencia();
       autocompletarFechaHora();
     };
