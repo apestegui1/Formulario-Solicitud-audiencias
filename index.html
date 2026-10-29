@@ -231,7 +231,7 @@
           </div>
         </div>
 
-        <!-- 2. DATOS DE LOS IMPUTADOS (CON DELITO, HECHO, CALIFICACIÓN Y PARTICIPACIÓN) -->
+        <!-- 2. DATOS DE LOS IMPUTADOS -->
         <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-4">
           <div class="flex justify-between items-center border-b pb-1">
             <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider">2. Imputados / Investigados</h3>
@@ -514,6 +514,7 @@
               <i class="fa-solid fa-envelope text-slate-600"></i> Correos Electrónicos Oficiales de Recepción (Oficina Judicial - Distrito Misiones)
             </div>
             <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[7.5px] font-mono text-slate-700">
+              <div><span class="font-bold text-slate-900">Posadas Sede Central:</span> ofjudicial.posadas.sedecentral@pjn.gov.ar</div>
               <div><span class="font-bold text-slate-900">Posadas Garantías:</span> ofjudicial.posadas.garantias@pjn.gov.ar</div>
               <div><span class="font-bold text-slate-900">Posadas Revisión:</span> ofjudicial.posadas.revision@pjn.gov.ar</div>
               <div><span class="font-bold text-slate-900">Posadas Juicio y Ejecución:</span> ofjudicial.posadas.juicioyejecucion@pjn.gov.ar</div>
@@ -692,7 +693,7 @@
           </div>
         </div>
 
-        <!-- NUEVOS CAMPOS PENALES -->
+        <!-- CAMPOS PENALES -->
         <div class="border-t pt-2 mt-2 bg-slate-100 p-2 rounded border border-slate-200 space-y-2">
           <div class="font-bold text-slate-800 text-[10px]">Situación Legal y Calificación (Imputado ${id}):</div>
           <div class="grid grid-cols-2 gap-2">
@@ -862,12 +863,7 @@
       const hSol = document.getElementById('f_hora_solicitud').value || '-';
       document.getElementById('v_fechahora_solicitud').textContent = `${fSol} ${hSol}`;
 
-      let caratulaTexto = document.getElementById('f_caratula').value || 'COMPLETE LA CARÁTULA DEL CASO...';
-      const nroArt = document.getElementById('f_nro_art').value;
-      if (nroArt && nroArt.trim() !== '') {
-        caratulaTexto += ` s/ ${nroArt}`;
-      }
-      document.getElementById('v_caratula').textContent = caratulaTexto;
+      document.getElementById('v_caratula').textContent = document.getElementById('f_caratula').value || 'COMPLETE LA CARÁTULA DEL CASO...';
       
       const modo = document.getElementById('f_modo_inicio').value;
       const fuerza = document.getElementById('f_fuerza').value;
@@ -878,7 +874,14 @@
       document.getElementById('v_fecha_comision').textContent = document.getElementById('f_fecha_comision').value || '-';
       document.getElementById('v_lugar_comision').textContent = document.getElementById('f_lugar_comision').value || '-';
 
-      document.getElementById('v_tipo_audiencia').textContent = document.getElementById('f_tipo_audiencia').value || '-';
+      // TIPO DE AUDIENCIA + OBJETOS PROCESALES AL LADO / PEGADO
+      let tipoAudienciaTexto = document.getElementById('f_tipo_audiencia').value || '-';
+      const nroArt = document.getElementById('f_nro_art').value;
+      if (nroArt && nroArt.trim() !== '') {
+        tipoAudienciaTexto += ` - ${nroArt.trim()}`;
+      }
+      document.getElementById('v_tipo_audiencia').textContent = tipoAudienciaTexto;
+
       document.getElementById('v_solicitada_por').textContent = document.getElementById('f_solicitada_por').value;
       document.getElementById('v_carpeta_ofiju').textContent = document.getElementById('f_carpeta_ofiju').value || '-';
       document.getElementById('v_intervencion_juez').textContent = document.getElementById('f_intervencion_juez').value;
@@ -901,13 +904,11 @@
         const dom = document.getElementById(`imp_${i}_domicilio`)?.value || '';
         const tel = document.getElementById(`imp_${i}_tel`)?.value || '';
 
-        // Campos nuevos
         const delito = document.getElementById(`imp_${i}_delito`)?.value || '';
         const hecho = document.getElementById(`imp_${i}_hecho`)?.value || '';
         const calificacion = document.getElementById(`imp_${i}_calificacion`)?.value || '';
         const participacion = document.getElementById(`imp_${i}_participacion`)?.value || '';
 
-        // Fila 1: Datos Personales
         const trImp = document.createElement('tr');
         trImp.className = nombre ? 'font-medium' : 'text-slate-400';
         trImp.innerHTML = `
@@ -922,7 +923,6 @@
         `;
         tbodyImp.appendChild(trImp);
 
-        // Fila 2: Delito / Hecho / Calificación / Participación
         const trDel = document.createElement('tr');
         trDel.className = (delito || hecho || calificacion) ? 'font-medium' : 'text-slate-400';
         trDel.innerHTML = `
@@ -934,7 +934,6 @@
         `;
         tbodyDel.appendChild(trDel);
 
-        // Fila 3: Detención y Referentes
         const detFechaHora = document.getElementById(`imp_${i}_det_fechahora`)?.value || '';
         const detLugar = document.getElementById(`imp_${i}_det_lugar`)?.value || '';
         const detContacto = document.getElementById(`imp_${i}_det_contacto`)?.value || '';
