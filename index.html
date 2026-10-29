@@ -26,7 +26,7 @@
       margin: 0 auto;
       background: white;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      font-size: 10px;
+      font-size: 9.5px;
       line-height: 1.2;
       color: #1e293b;
     }
@@ -231,7 +231,7 @@
           </div>
         </div>
 
-        <!-- 2. DATOS DE LOS IMPUTADOS (DINÁMICO CON BOTÓN +) -->
+        <!-- 2. DATOS DE LOS IMPUTADOS (CON DELITO, HECHO, CALIFICACIÓN Y PARTICIPACIÓN) -->
         <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-4">
           <div class="flex justify-between items-center border-b pb-1">
             <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider">2. Imputados / Investigados</h3>
@@ -249,7 +249,7 @@
           </div>
         </div>
 
-        <!-- 3. UNIDAD DEFENSORA (AMPLIADA CON DEFENSAS PLURALES) -->
+        <!-- 3. UNIDAD DEFENSORA -->
         <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-3">
           <div class="flex justify-between items-center border-b pb-1">
             <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider">3. Datos de la Unidad Defensora</h3>
@@ -281,11 +281,11 @@
             </div>
             <div>
               <label class="block font-semibold mb-1">Domicilio Electrónico (Notificación)</label>
-              <input type="text" id="f_defensa_dom_elec" oninput="actualizarVista()" placeholder="Ej: def.gonzalez@pjn.gov.ar / 27301234568" class="w-full border rounded p-1.5">
+              <input type="text" id="f_defensa_dom_elec" oninput="actualizarVista()" placeholder="Ej: def.gonzalez@pjn.gov.ar" class="w-full border rounded p-1.5">
             </div>
           </div>
 
-          <!-- BLOQUE DEFENSAS PLURALES (DINÁMICO) -->
+          <!-- BLOQUE DEFENSAS PLURALES -->
           <div id="bloque_defensa_plural" class="space-y-3 hidden">
             <p class="text-[11px] text-slate-500 italic">Complete los datos defensivos específicos para cada imputado:</p>
             <div id="contenedor_defensas_plurales" class="space-y-3">
@@ -294,7 +294,7 @@
           </div>
         </div>
 
-        <!-- 4. UNIDAD FISCAL (MPF AMPLIADA) -->
+        <!-- 4. UNIDAD FISCAL (MPF) -->
         <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-3">
           <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider border-b pb-1">4. Datos de la Unidad Fiscal (MPF)</h3>
           <div>
@@ -401,13 +401,15 @@
           <!-- 2. TABLA COMPLETA DE IMPUTADOS -->
           <div class="mb-1.5">
             <div class="bg-slate-800 text-white font-bold px-2 py-0.5 text-[9px] uppercase tracking-wider mb-0.5">
-              2. DATOS DE LOS IMPUTADOS / INVESTIGADOS
+              2. DATOS DE LOS IMPUTADOS / INVESTIGADOS Y SITUACIÓN PROCESAL
             </div>
-            <table class="w-full text-[8px] table-custom border-collapse">
+            
+            <!-- Tabla Principal Imputados -->
+            <table class="w-full text-[8px] table-custom border-collapse mb-1">
               <thead>
                 <tr class="text-center bg-slate-100">
                   <th class="w-5">#</th>
-                  <th class="w-48">Apellido y Nombre</th>
+                  <th class="w-44">Apellido y Nombre</th>
                   <th class="w-20">Documento</th>
                   <th class="w-10">Edad</th>
                   <th class="w-20">Nacionalidad</th>
@@ -421,24 +423,39 @@
               </tbody>
             </table>
 
-            <!-- CUADRO DE DETENCIÓN Y REFERENTES -->
-            <div class="mt-1">
-              <div class="font-bold text-[8px] text-slate-700 uppercase border-b mb-0.5">Detalle de Detención y Referentes / Tutores (si corresponde)</div>
-              <table class="w-full text-[8px] table-custom border-collapse">
-                <thead>
-                  <tr class="text-center bg-slate-50">
-                    <th class="w-5">#</th>
-                    <th class="w-32">Fecha / Hora Detención</th>
-                    <th>Lugar y Dirección de Detención</th>
-                    <th class="w-40">Tel / Email Lugar Detención</th>
-                    <th class="w-56">Referente / Tutor (Nombre y Teléfono)</th>
-                  </tr>
-                </thead>
-                <tbody id="v_tabla_detenidos">
-                  <!-- Generado por JS -->
-                </tbody>
-              </table>
-            </div>
+            <!-- Subtabla: Delito, Hecho, Calificación Jurídica y Participación -->
+            <div class="font-bold text-[8px] text-slate-700 uppercase border-b mb-0.5">Calificación Legal y Detalle del Hecho por Imputado</div>
+            <table class="w-full text-[8px] table-custom border-collapse mb-1">
+              <thead>
+                <tr class="text-center bg-slate-50">
+                  <th class="w-5">#</th>
+                  <th class="w-32">Delito (Calificación Amplia)</th>
+                  <th>Hecho Atribuido (Detalle)</th>
+                  <th class="w-44">Calificación Jurídica</th>
+                  <th class="w-32">Grado de Participación</th>
+                </tr>
+              </thead>
+              <tbody id="v_tabla_delitos">
+                <!-- Generado por JS -->
+              </tbody>
+            </table>
+
+            <!-- Subtabla: Detención y Referentes -->
+            <div class="font-bold text-[8px] text-slate-700 uppercase border-b mb-0.5">Detalle de Detención y Referentes / Tutores (si corresponde)</div>
+            <table class="w-full text-[8px] table-custom border-collapse">
+              <thead>
+                <tr class="text-center bg-slate-50">
+                  <th class="w-5">#</th>
+                  <th class="w-32">Fecha / Hora Detención</th>
+                  <th>Lugar y Dirección de Detención</th>
+                  <th class="w-36">Tel / Email Lugar Detención</th>
+                  <th class="w-48">Referente / Tutor (Nombre y Teléfono)</th>
+                </tr>
+              </thead>
+              <tbody id="v_tabla_detenidos">
+                <!-- Generado por JS -->
+              </tbody>
+            </table>
           </div>
 
           <!-- 3 Y 4. FISCALÍA Y DEFENSA AMPLIADAS -->
@@ -675,6 +692,30 @@
             <input type="text" id="imp_${id}_tel" oninput="actualizarVista()" placeholder="Teléfono" class="w-full border rounded p-1">
           </div>
         </div>
+
+        <!-- NUEVOS CAMPOS PENALES -->
+        <div class="border-t pt-2 mt-2 bg-slate-100 p-2 rounded border border-slate-200 space-y-2">
+          <div class="font-bold text-slate-800 text-[10px]">Situación Legal y Calificación (Imputado ${id}):</div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold">Delito (Calificación Amplia)</label>
+              <input type="text" id="imp_${id}_delito" oninput="actualizarVista()" placeholder="Ej: Tráfico de estupefacientes" class="w-full border rounded p-1">
+            </div>
+            <div>
+              <label class="block font-semibold">Grado de Participación</label>
+              <input type="text" id="imp_${id}_participacion" oninput="actualizarVista()" placeholder="Ej: Autor / Coautor / Cómplice" class="w-full border rounded p-1">
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold">Hecho Atribuido (Detalle)</label>
+            <input type="text" id="imp_${id}_hecho" oninput="actualizarVista()" placeholder="Ej: Transporte de estupefacientes vía encomienda" class="w-full border rounded p-1">
+          </div>
+          <div>
+            <label class="block font-semibold">Calificación Jurídica</label>
+            <input type="text" id="imp_${id}_calificacion" oninput="actualizarVista()" placeholder="Ej: Art. 5 inc. c Ley 23.737" class="w-full border rounded p-1">
+          </div>
+        </div>
+
         <div class="border-t pt-2 mt-2 bg-amber-50/50 p-2 rounded border border-amber-200">
           <div class="font-bold text-slate-700 text-[10px] mb-1">Detalle si se encuentra Detenido:</div>
           <div class="grid grid-cols-2 gap-2">
@@ -824,7 +865,7 @@
 
       let caratulaTexto = document.getElementById('f_caratula').value || 'COMPLETE LA CARÁTULA DEL CASO...';
       const nroArt = document.getElementById('f_nro_art').value;
-      if (nroArt) {
+      if (nroArt && nroArt.trim() !== '') {
         caratulaTexto += ` s/ ${nroArt}`;
       }
       document.getElementById('v_caratula').textContent = caratulaTexto;
@@ -845,8 +886,11 @@
       document.getElementById('v_nombre_jueces').textContent = document.getElementById('f_nombre_jueces').value || '-';
 
       const tbodyImp = document.getElementById('v_tabla_imputados');
+      const tbodyDel = document.getElementById('v_tabla_delitos');
       const tbodyDet = document.getElementById('v_tabla_detenidos');
+      
       tbodyImp.innerHTML = '';
+      tbodyDel.innerHTML = '';
       tbodyDet.innerHTML = '';
 
       for (let i = 1; i <= totalImputados; i++) {
@@ -858,6 +902,13 @@
         const dom = document.getElementById(`imp_${i}_domicilio`)?.value || '';
         const tel = document.getElementById(`imp_${i}_tel`)?.value || '';
 
+        // Campos nuevos
+        const delito = document.getElementById(`imp_${i}_delito`)?.value || '';
+        const hecho = document.getElementById(`imp_${i}_hecho`)?.value || '';
+        const calificacion = document.getElementById(`imp_${i}_calificacion`)?.value || '';
+        const participacion = document.getElementById(`imp_${i}_participacion`)?.value || '';
+
+        // Fila 1: Datos Personales
         const trImp = document.createElement('tr');
         trImp.className = nombre ? 'font-medium' : 'text-slate-400';
         trImp.innerHTML = `
@@ -872,6 +923,19 @@
         `;
         tbodyImp.appendChild(trImp);
 
+        // Fila 2: Delito / Hecho / Calificación / Participación
+        const trDel = document.createElement('tr');
+        trDel.className = (delito || hecho || calificacion) ? 'font-medium' : 'text-slate-400';
+        trDel.innerHTML = `
+          <td class="text-center font-bold">${i}</td>
+          <td>${delito || '-'}</td>
+          <td>${hecho || '-'}</td>
+          <td class="font-mono font-semibold text-slate-900">${calificacion || '-'}</td>
+          <td class="text-center">${participacion || '-'}</td>
+        `;
+        tbodyDel.appendChild(trDel);
+
+        // Fila 3: Detención y Referentes
         const detFechaHora = document.getElementById(`imp_${i}_det_fechahora`)?.value || '';
         const detLugar = document.getElementById(`imp_${i}_det_lugar`)?.value || '';
         const detContacto = document.getElementById(`imp_${i}_det_contacto`)?.value || '';
